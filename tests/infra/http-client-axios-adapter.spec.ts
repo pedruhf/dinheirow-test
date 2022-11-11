@@ -7,7 +7,7 @@ jest.mock("axios", () => ({
 }));
 
 const makeSut = () => {
-  const sut = new HttpClientAxiosAdapter("", {});
+  const sut = new HttpClientAxiosAdapter();
   return { sut };
 };
 

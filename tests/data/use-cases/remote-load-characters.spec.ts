@@ -14,7 +14,7 @@ describe("RemoteLoadCharacters Use Case", () => {
     const requestSpy = jest.spyOn(httpClientStub, "request");
     await sut.loadAll(2, 50);
 
-    expect(requestSpy).toHaveBeenCalledWith("any_url", "get", {
+    expect(requestSpy).toHaveBeenCalledWith("/characters", "get", {
       params: {
         page: 2,
         limit: 50,
@@ -27,7 +27,7 @@ describe("RemoteLoadCharacters Use Case", () => {
     const requestSpy = jest.spyOn(httpClientStub, "request");
     await sut.loadAll();
 
-    expect(requestSpy).toHaveBeenCalledWith("any_url", "get", {
+    expect(requestSpy).toHaveBeenCalledWith("/characters", "get", {
       params: {
         page: 1,
         limit: 10,
