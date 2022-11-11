@@ -1,9 +1,9 @@
 import { characterMock } from "@/tests/domain/mocks";
 import { RemoteLoadCharacters } from "@/data/use-cases";
-import { makeFakeHttpClient } from "@/tests/data/mocks";
+import { backendCharacterMock, HttpClientSpy } from "@/tests/data/mocks";
 
 const makeSut = () => {
-  const httpClientStub = makeFakeHttpClient();
+  const httpClientStub = new HttpClientSpy();
   const sut = new RemoteLoadCharacters(httpClientStub);
   return { sut, httpClientStub };
 };
@@ -39,7 +39,12 @@ describe("RemoteLoadCharacters Use Case", () => {
     const { sut } = makeSut();
     const result = await sut.loadAll();
 
-    expect(result).toEqual([characterMock()]);
+    expect(result).toEqual([
+      {
+        ...backendCharacterMock(),
+        thumbnail: `${backendCharacterMock().thumbnail.path}.${backendCharacterMock().thumbnail.extension}`,
+      },
+    ]);
   });
 
   test("should rethrow if httpClient throws", async () => {

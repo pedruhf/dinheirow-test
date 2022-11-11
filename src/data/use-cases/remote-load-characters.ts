@@ -16,11 +16,11 @@ export class RemoteLoadCharacters implements LoadCharacters {
       },
     });
 
-    return this.mapDataToModel(result.data.data.results);
+    return this.mapDataToModel(result.data);
   }
 
-  private mapDataToModel(characters: any[]): Character[] {
-    return characters.map((character) => ({
+  private mapDataToModel(data: Record<any, any>): Character[] {
+    return data.data.results.map((character) => ({
       id: character.id,
       name: character.name,
       description: character.description,
