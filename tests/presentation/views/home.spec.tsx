@@ -23,8 +23,7 @@ type SutTypes = {
   history: MemoryHistory;
 };
 
-const makeSut = (): SutTypes => {
-  const loadCharactersSpy = new LoadCharactersSpy();
+const makeSut = (loadCharactersSpy = new LoadCharactersSpy()): SutTypes => {
   const history = createMemoryHistory({ initialEntries: ["/"] });
   const sut = render(<Home loadCharacters={loadCharactersSpy} />);
   return {
@@ -46,6 +45,30 @@ describe("Home View", () => {
     await waitFor(() => {
       const characterCardList = screen.getAllByTestId("character-card");
       expect(characterCardList).toHaveLength(loadCharactersSpy.characters.length);
+    });
+  });
+
+  test("Should call on change page of pagination", async () => {
+    const { loadCharactersSpy } = makeSut();
+
+    await waitFor(() => {
+      const paginationNextButton = screen.getByTestId("pagination-next-button");
+      fireEvent.click(paginationNextButton);
+      const paginationPrevButton = screen.getByTestId("pagination-prev-button");
+      fireEvent.click(paginationPrevButton);
+    });
+
+    expect(loadCharactersSpy.callsCount).toBe(3);
+  });
+
+  test("Should show alert if loadCharacters fails", async () => {
+    const loadCharactersSpy = new LoadCharactersSpy();
+    jest.spyOn(loadCharactersSpy, "loadAll").mockRejectedValueOnce(new Error("loadCharacters error"));
+
+    makeSut(loadCharactersSpy);
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("load-error")).toBeInTheDocument();
     });
   });
 });

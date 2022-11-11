@@ -49,6 +49,7 @@
     ],
     "collectCoverageFrom": [
       "<rootDir>/src/**/*.{ts,tsx}",
+      "!<rootDir>/src/*.tsx",
       "!<rootDir>/src/main/**/*",
       "!<rootDir>/src/domain/**/*",
       "!<rootDir>/**/contracts/**/*",
