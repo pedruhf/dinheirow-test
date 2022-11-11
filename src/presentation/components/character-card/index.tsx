@@ -11,10 +11,10 @@ type CharacterCardProps = {
 export const CharacterCard: React.FC<CharacterCardProps> = ({ name, description, thumbnail }: CharacterCardProps) => {
   return (
     <div className={styles.characterCardWrapper}>
-      <div className={styles.characterThumbnail} style={{ backgroundImage: `url(${thumbnail})` }}></div>
+      <div data-testid="character-thumbnail" className={styles.characterThumbnail} style={{ backgroundImage: `url(${thumbnail})` }}></div>
       <div className={styles.characterInfo}>
-        <strong className={styles.characterName}>{name}</strong>
-        <strong className={styles.characterDescription}>
+        <strong data-testid="character-name" className={styles.characterName}>{name}</strong>
+        <strong data-testid="character-description" className={styles.characterDescription}>
           Descrição: <p>{description}</p>
         </strong>
       </div>
