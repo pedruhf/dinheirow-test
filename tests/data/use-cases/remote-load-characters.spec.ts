@@ -16,7 +16,7 @@ describe("RemoteLoadCharacters Use Case", () => {
 
     expect(requestSpy).toHaveBeenCalledWith("/characters", "get", {
       params: {
-        page: 2,
+        offset: 50,
         limit: 50,
       },
     });
@@ -29,7 +29,7 @@ describe("RemoteLoadCharacters Use Case", () => {
 
     expect(requestSpy).toHaveBeenCalledWith("/characters", "get", {
       params: {
-        page: 1,
+        offset: 0,
         limit: 10,
       },
     });
