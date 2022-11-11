@@ -30,7 +30,7 @@ describe("RemoteLoadCharacters Use Case", () => {
     expect(requestSpy).toHaveBeenCalledWith("/characters", "get", {
       params: {
         offset: 0,
-        limit: 10,
+        limit: 50,
       },
     });
   });
