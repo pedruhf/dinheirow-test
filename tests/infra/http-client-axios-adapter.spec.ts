@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { HttpClientAxiosAdapter } from "../../src/infra/http";
+import { HttpClientAxiosAdapter } from "@/infra/http";
 
 jest.mock("axios", () => ({
   create: jest.fn(),

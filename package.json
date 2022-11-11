@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "jest --passWithNoTests --no-cache --runInBand",
+    "test:watch": " npm test -- --watch",
+    "test:ci": "npm test -- --coverage"
   },
   "dependencies": {
     "axios": "^1.1.3",
