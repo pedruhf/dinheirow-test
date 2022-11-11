@@ -47,6 +47,23 @@ describe("RemoteLoadCharacters Use Case", () => {
     ]);
   });
 
+  test("should return default thumbnail when string is included", async () => {
+    const { sut, httpClientStub } = makeSut();
+    httpClientStub.data = {
+      data: {
+        results: [{ ...backendCharacterMock(), thumbnail: { path: "image_not_available", extension: "png" } }],
+      },
+    }
+    const result = await sut.loadAll();
+
+    expect(result).toEqual([
+      {
+        ...backendCharacterMock(),
+        thumbnail: "https://midias.correiobraziliense.com.br/_midias/jpg/2021/05/03/675x450/1_marvel_studios_logo-6637962.jpeg?20220621151438?20220621151438",
+      },
+    ]);
+  });
+
   test("should rethrow if httpClient throws", async () => {
     const { sut, httpClientStub } = makeSut();
     jest.spyOn(httpClientStub, "request").mockRejectedValueOnce(new Error("request error"));

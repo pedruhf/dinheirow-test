@@ -14,16 +14,17 @@ export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
   const reqLength = 24;
   const [currentPage, setCurrentPage] = useState(1);
   const [characters, setCharacters] = useState<Character[]>([]);
+  const [loadError, setLoadError] = useState("");
 
   const handleNextPage = async () => {
-    const result = await loadCharacters.loadAll(currentPage + 1, reqLength);
     setCurrentPage((prevState) => prevState + 1);
+    const result = await loadCharacters.loadAll(currentPage + 1, reqLength);
     setCharacters(result);
   };
 
   const handlePrevPage = async () => {
-    const result = await loadCharacters.loadAll(currentPage - 1, reqLength);
     setCurrentPage((prevState) => prevState - 1);
+    const result = await loadCharacters.loadAll(currentPage - 1, reqLength);
     setCharacters(result);
   };
 
@@ -31,7 +32,7 @@ export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
     loadCharacters
       .loadAll(currentPage, reqLength)
       .then((result) => setCharacters(result))
-      .catch((err) => alert(err));
+      .catch((err) => setLoadError(err.message));
   }, []);
 
   return (
@@ -43,6 +44,8 @@ export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
       </div>
 
       <Pagination currentPage={currentPage} totalPages={10} handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} />
+
+      {loadError.length && <div data-testid="load-error">{loadError}</div>}
     </div>
   );
 };
