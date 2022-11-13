@@ -14,31 +14,47 @@ export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
   const reqLength = 24;
   const [currentPage, setCurrentPage] = useState(1);
   const [characters, setCharacters] = useState<Character[]>([]);
+  const [filteredCharacters, setFilteredCharacters] = useState<Character[]>([]);
+  const [searchFilter, setSearchFilter] = useState("");
   const [loadError, setLoadError] = useState("");
 
   const handleNextPage = async () => {
     setCurrentPage((prevState) => prevState + 1);
     const result = await loadCharacters.loadAll(currentPage + 1, reqLength);
     setCharacters(result);
+    setFilteredCharacters(result);
   };
 
   const handlePrevPage = async () => {
     setCurrentPage((prevState) => prevState - 1);
     const result = await loadCharacters.loadAll(currentPage - 1, reqLength);
     setCharacters(result);
+    setFilteredCharacters(result);
+  };
+
+  const handleSearchFilter = (value: string) => {
+    const filteredCharacters = characters.filter(character => character.name.toLowerCase().includes(value.toLowerCase()));
+    setFilteredCharacters(filteredCharacters);
   };
 
   useEffect(() => {
     loadCharacters
       .loadAll(currentPage, reqLength)
-      .then((result) => setCharacters(result))
+      .then((result) => {
+        setCharacters(result);
+        setFilteredCharacters(result);
+      })
       .catch((err) => setLoadError(err.message));
   }, []);
 
   return (
     <div className={styles.homeWrapper}>
-      <div className={styles.characteCardsWrapper}>
-        {characters.map((item) => (
+      <div className={styles.searchFilter}>
+        <input type="text" placeholder="Filtrar por nome" onChange={event => handleSearchFilter(event.target.value)} />
+      </div>
+
+      <div className={styles.characterCardsWrapper}>
+        {filteredCharacters.map((item) => (
           <CharacterCard {...item} key={item.id} />
         ))}
       </div>

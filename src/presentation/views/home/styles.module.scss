@@ -1,7 +1,20 @@
 .homeWrapper {
   padding: 2rem;
 
-  .characteCardsWrapper {
+  .searchFilter {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+
+    input {
+      height: 2.4rem;
+      width: 15rem;
+      padding: 0 0.5rem;
+      outline: 0;
+    }
+  }
+
+  .characterCardsWrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,7 +26,7 @@
   .homeWrapper {
     padding: 2rem;
 
-    .characteCardsWrapper {
+    .characterCardsWrapper {
       display: grid;
       grid-template-columns: repeat(auto-fit, 350px);
       gap: 0 2rem;
