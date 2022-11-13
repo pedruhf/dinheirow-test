@@ -6,6 +6,7 @@ import { CharacterCard, Pagination } from "@/presentation/components";
 import { useStringFilterSetup } from "@/presentation/hooks";
 
 import styles from "./styles.module.scss";
+import { Link } from "react-router-dom";
 
 type HomeProps = {
   loadCharacters: LoadCharacters;
@@ -56,7 +57,9 @@ export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
 
       <div className={styles.characterCardsWrapper}>
         {filteredCharacters.map((item) => (
-          <CharacterCard {...item} key={item.id} />
+          <Link data-testid="link" to={{ pathname: `/characters/details/${item.id}` }} key={item.id}>
+            <CharacterCard {...item} />
+          </Link>
         ))}
       </div>
 
