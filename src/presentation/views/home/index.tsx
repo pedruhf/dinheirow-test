@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Character } from "@/domain/models";
 import { LoadCharacters } from "@/domain/features";
 import { CharacterCard, Pagination } from "@/presentation/components";
+import { useStringFilterSetup } from "@/presentation/hooks";
 
 import styles from "./styles.module.scss";
 
@@ -14,9 +15,9 @@ export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
   const reqLength = 24;
   const [currentPage, setCurrentPage] = useState(1);
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [filteredCharacters, setFilteredCharacters] = useState<Character[]>([]);
-  const [searchFilter, setSearchFilter] = useState("");
+  const [filteredCharacters, setFilteredCharacters] = useState([]);
   const [loadError, setLoadError] = useState("");
+  const useStringFilter = useStringFilterSetup((array) => setFilteredCharacters(array));
 
   const handleNextPage = async () => {
     setCurrentPage((prevState) => prevState + 1);
@@ -32,11 +33,6 @@ export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
     setFilteredCharacters(result);
   };
 
-  const handleSearchFilter = (value: string) => {
-    const filteredCharacters = characters.filter(character => character.name.toLowerCase().includes(value.toLowerCase()));
-    setFilteredCharacters(filteredCharacters);
-  };
-
   useEffect(() => {
     loadCharacters
       .loadAll(currentPage, reqLength)
@@ -50,7 +46,12 @@ export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
   return (
     <div className={styles.homeWrapper}>
       <div className={styles.searchFilter}>
-        <input type="text" placeholder="Filtrar por nome" onChange={event => handleSearchFilter(event.target.value)} />
+        <input
+          data-testid="search-filter"
+          type="text"
+          placeholder="Filtrar por nome"
+          onChange={(event) => useStringFilter(event.target.value, characters, "name")}
+        />
       </div>
 
       <div className={styles.characterCardsWrapper}>
