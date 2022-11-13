@@ -1,6 +1,7 @@
 import React from "react";
-import { createMemoryHistory, MemoryHistory } from "history";
 import { fireEvent, render, RenderResult, screen, waitFor } from "@testing-library/react";
+import { Router } from "react-router-dom";
+import { createMemoryHistory, MemoryHistory } from "history";
 
 import { Home } from "@/presentation/views";
 import { LoadCharacters } from "@/domain/features";
@@ -24,8 +25,12 @@ type SutTypes = {
 };
 
 const makeSut = (loadCharactersSpy = new LoadCharactersSpy()): SutTypes => {
-  const history = createMemoryHistory({ initialEntries: ["/"] });
-  const sut = render(<Home loadCharacters={loadCharactersSpy} />);
+  const history = createMemoryHistory();
+  const sut = render(
+    <Router navigator={history} location={history.location}>
+      <Home loadCharacters={loadCharactersSpy} />
+    </Router>
+  );
   return {
     sut,
     loadCharactersSpy,
@@ -69,6 +74,16 @@ describe("Home View", () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId("load-error")).toBeInTheDocument();
+    });
+  });
+
+  test("Should navigate to character/details on click", async () => {
+    const { history } = makeSut();
+
+    await waitFor(() => {
+      const link = screen.getByTestId("link");
+      fireEvent.click(link);
+      expect(history.location.pathname).toBe("/characters/details/1");
     });
   });
 });
