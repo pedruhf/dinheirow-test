@@ -7,6 +7,8 @@ import { Home } from "@/presentation/views";
 import { LoadCharacters } from "@/domain/features";
 import { Character } from "@/domain/models";
 import { characterMock } from "@/tests/domain/mocks";
+import { ReactQueryClientProvider, RequestHandlerReactQueryAdapter } from "@/infra/externals";
+import { RequestHandler, RequestHandleResult } from "@/data/contracts";
 
 class LoadCharactersSpy implements LoadCharacters {
   callsCount = 0;
@@ -18,29 +20,47 @@ class LoadCharactersSpy implements LoadCharacters {
   }
 }
 
+class RequestHandlerSpy implements RequestHandler<any> {
+  callsCount = 0;
+  handle(queryKey: string | string[], callback: () => Promise<any>, options?: Record<any, unknown>): RequestHandleResult<any> {
+    this.callsCount++;
+    callback();
+    return {
+      isLoading: false,
+      data: "any_data",
+      error: null,
+    }
+  }
+}
+
 type SutTypes = {
   sut: RenderResult;
   loadCharactersSpy: LoadCharactersSpy;
+  requestHandlerSpy: RequestHandlerSpy;
   history: MemoryHistory;
 };
 
-const makeSut = (loadCharactersSpy = new LoadCharactersSpy()): SutTypes => {
+const makeSut = (loadCharactersSpy = new LoadCharactersSpy(), requestHandlerSpy = new RequestHandlerSpy()): SutTypes => {
   const history = createMemoryHistory({ initialEntries: ["/"] });
   const sut = render(
-    <Router navigator={history} location={history.location}>
-      <Home loadCharacters={loadCharactersSpy} />
-    </Router>
+    <ReactQueryClientProvider>
+      <Router navigator={history} location={history.location}>
+        <Home loadCharacters={loadCharactersSpy} requestHandler={requestHandlerSpy} />
+      </Router>
+    </ReactQueryClientProvider>
   );
   return {
     sut,
     loadCharactersSpy,
+    requestHandlerSpy,
     history,
   };
 };
 
 describe("Home View", () => {
   test("Should call loadCharacters on start", async () => {
-    const { loadCharactersSpy } = makeSut();
+    const { loadCharactersSpy, requestHandlerSpy } = makeSut();
+    expect(requestHandlerSpy.callsCount).toBe(1);
     expect(loadCharactersSpy.callsCount).toBe(1);
   });
 
@@ -59,18 +79,21 @@ describe("Home View", () => {
     await waitFor(() => {
       const paginationNextButton = screen.getByTestId("pagination-next-button");
       fireEvent.click(paginationNextButton);
+      expect(loadCharactersSpy.callsCount).toBeGreaterThan(2);
       const paginationPrevButton = screen.getByTestId("pagination-prev-button");
       fireEvent.click(paginationPrevButton);
+      expect(loadCharactersSpy.callsCount).toBeGreaterThan(3);
     });
 
-    expect(loadCharactersSpy.callsCount).toBe(3);
   });
 
   test("Should show error if loadCharacters fails", async () => {
+    const requestHandlerSpy = new RequestHandlerSpy();
     const loadCharactersSpy = new LoadCharactersSpy();
+    jest.spyOn(requestHandlerSpy, "handle").mockReturnValueOnce({ isLoading: false, data: "any_data", error: "requestHandler error"});
     jest.spyOn(loadCharactersSpy, "loadAll").mockRejectedValueOnce(new Error("loadCharacters error"));
 
-    makeSut(loadCharactersSpy);
+    makeSut(loadCharactersSpy, requestHandlerSpy);
 
     await waitFor(() => {
       expect(screen.queryByTestId("load-error")).toBeInTheDocument();

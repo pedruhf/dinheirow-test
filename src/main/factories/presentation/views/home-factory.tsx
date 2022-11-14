@@ -1,9 +1,12 @@
 import React from "react";
 
-import { makeRemoteLoadCharacters } from "@/main/factories/data";
+import { Character } from "@/domain/models";
 import { Home } from "@/presentation/views";
+import { makeRemoteLoadCharacters } from "@/main/factories/data";
+import { makeRequestHandlerReactQueryAdapter } from "@/main/factories/infra";
 
 export const makeHomeComponent = () => {
   const remoteLoadCharacters = makeRemoteLoadCharacters();
-  return <Home loadCharacters={remoteLoadCharacters} />;
+  const requestHandlerReactQueryAdapter = makeRequestHandlerReactQueryAdapter<Character[]>();
+  return <Home loadCharacters={remoteLoadCharacters} requestHandler={requestHandlerReactQueryAdapter} />;
 };
