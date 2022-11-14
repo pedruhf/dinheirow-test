@@ -79,12 +79,11 @@ describe("Home View", () => {
     await waitFor(() => {
       const paginationNextButton = screen.getByTestId("pagination-next-button");
       fireEvent.click(paginationNextButton);
-      expect(loadCharactersSpy.callsCount).toBeGreaterThan(2);
       const paginationPrevButton = screen.getByTestId("pagination-prev-button");
       fireEvent.click(paginationPrevButton);
-      expect(loadCharactersSpy.callsCount).toBeGreaterThan(3);
     });
-
+    
+    expect(loadCharactersSpy.callsCount).toBeGreaterThanOrEqual(3);
   });
 
   test("Should show error if loadCharacters fails", async () => {

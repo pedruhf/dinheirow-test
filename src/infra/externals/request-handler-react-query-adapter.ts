@@ -8,7 +8,6 @@ export class RequestHandlerReactQueryAdapter<T> implements RequestHandler<T> {
       queryKey,
       queryFn: callback,
     });
-    console.log({ isLoading, data, error });
     
     if (error) {
       const formattedError = <string>(error as any).response?.data?.status || "Erro inesperado";
