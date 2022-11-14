@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { Comic } from "@/domain/models";
 import { LoadCharactersComics } from "@/domain/features";
@@ -37,7 +37,8 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharacte
   };
 
   useEffect(() => {
-    loadCharactersComics.loadAll(Number(id), currentPage, reqLength)
+    loadCharactersComics
+      .loadAll(Number(id), currentPage, reqLength)
       .then((result) => {
         setComics(result.comics);
         setFilteredComics(result.comics);
@@ -59,13 +60,16 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharacte
 
       <div className={styles.comicCardsWrapper}>
         {filteredComics.map((item) => (
-          <Link data-testid="link" to={{ pathname: `/comics/details/${item.id}` }} key={item.id}>
-            <ComicCard {...item} />
-          </Link>
+          <ComicCard {...item} key={item.id} />
         ))}
       </div>
 
-      <Pagination currentPage={currentPage} totalPages={Math.ceil(totalComics / reqLength)} handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={Math.ceil(totalComics / reqLength)}
+        handleNextPage={handleNextPage}
+        handlePrevPage={handlePrevPage}
+      />
 
       {loadError.length && <div data-testid="load-error">{loadError}</div>}
     </div>
