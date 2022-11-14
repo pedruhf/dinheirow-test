@@ -73,6 +73,26 @@ describe("RemoteLoadCharacterComics Use Case", () => {
     });
   });
 
+  test("should return default description when string is falsy", async () => {
+    const { sut, httpClientStub } = makeSut();
+    httpClientStub.data = {
+      data: {
+        results: [{ ...backendComicMock(), description: "" }],
+        total: 50
+      },
+    }
+    const result = await sut.loadAll(1);
+
+    expect(result).toMatchObject({
+      comics: [{
+        ...backendComicMock(),
+        description: "description not informed",
+        thumbnail: `${backendComicMock().thumbnail.path}.${backendComicMock().thumbnail.extension}`,
+      }],
+      totalComics: 50,
+    });
+  });
+
   test("should rethrow if httpClient throws", async () => {
     const { sut, httpClientStub } = makeSut();
     jest.spyOn(httpClientStub, "request").mockRejectedValueOnce(new Error("request error"));

@@ -53,13 +53,33 @@ describe("RemoteLoadCharacters Use Case", () => {
       data: {
         results: [{ ...backendCharacterMock(), thumbnail: { path: "image_not_available", extension: "png" } }],
       },
-    }
+    };
     const result = await sut.loadAll();
 
     expect(result).toEqual([
       {
         ...backendCharacterMock(),
-        thumbnail: "https://midias.correiobraziliense.com.br/_midias/jpg/2021/05/03/675x450/1_marvel_studios_logo-6637962.jpeg?20220621151438?20220621151438",
+        thumbnail:
+          "https://midias.correiobraziliense.com.br/_midias/jpg/2021/05/03/675x450/1_marvel_studios_logo-6637962.jpeg?20220621151438?20220621151438",
+      },
+    ]);
+  });
+
+  test("should return default description when string is falsy", async () => {
+    const { sut, httpClientStub } = makeSut();
+    httpClientStub.data = {
+      data: {
+        results: [{ ...backendCharacterMock(), description: "" }],
+        total: 50,
+      },
+    };
+    const result = await sut.loadAll(1);
+
+    expect(result).toEqual([
+      {
+        ...backendCharacterMock(),
+        description: "description not informed",
+        thumbnail: `${backendCharacterMock().thumbnail.path}.${backendCharacterMock().thumbnail.extension}`,
       },
     ]);
   });
