@@ -46,7 +46,7 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharacte
   }, []);
 
   return (
-    <div className={styles.homeWrapper}>
+    <div className={styles.characterDetailsWrapper}>
       <div className={styles.searchFilter}>
         <input
           data-testid="search-filter"

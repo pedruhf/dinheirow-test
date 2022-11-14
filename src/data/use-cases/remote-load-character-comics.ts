@@ -17,7 +17,7 @@ export class RemoteLoadCharacterComics implements LoadCharactersComics {
     return data.data.results.map((comic) => ({
       id: comic.id,
       title: comic.title,
-      description: comic.description,
+      description: comic.description || "description not informed",
       thumbnail: comic.thumbnail.path.includes("image_not_available")
         ? "https://midias.correiobraziliense.com.br/_midias/jpg/2021/05/03/675x450/1_marvel_studios_logo-6637962.jpeg?20220621151438?20220621151438"
         : `${comic.thumbnail.path}.${comic.thumbnail.extension}`,
