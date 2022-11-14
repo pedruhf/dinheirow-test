@@ -66,7 +66,7 @@ describe("Home View", () => {
     expect(loadCharactersSpy.callsCount).toBe(3);
   });
 
-  test("Should show alert if loadCharacters fails", async () => {
+  test("Should show error if loadCharacters fails", async () => {
     const loadCharactersSpy = new LoadCharactersSpy();
     jest.spyOn(loadCharactersSpy, "loadAll").mockRejectedValueOnce(new Error("loadCharacters error"));
 
