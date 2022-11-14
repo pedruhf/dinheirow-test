@@ -68,6 +68,17 @@ describe("CharacterDetails View", () => {
     expect(loadCharactersComicsSpy.callsCount).toBe(3);
   });
 
+  test("Should return to homepage on click in back button", async () => {
+    const { history } = makeSut();
+
+    await waitFor(() => {
+      const backButton = screen.getByTestId("back-button");
+      fireEvent.click(backButton);
+    });
+
+    expect(history.location.pathname).toBe("/");
+  });
+
   test("Should show error if loadCharacters fails", async () => {
     const loadCharactersComicsSpy = new LoadCharactersComicsSpy();
     jest.spyOn(loadCharactersComicsSpy, "loadAll").mockRejectedValueOnce(new Error("loadCharactersComics error"));

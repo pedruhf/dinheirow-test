@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { Comic } from "@/domain/models";
 import { LoadCharactersComics } from "@/domain/features";
@@ -49,29 +49,38 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharacte
 
   return (
     <div className={styles.characterDetailsWrapper}>
-      <div className={styles.searchFilter}>
-        <input
-          data-testid="search-filter"
-          type="text"
-          placeholder="Filtrar por titulo"
-          onChange={(event) => useStringFilter(event.target.value, comics, "title")}
-        />
-      </div>
+      <Link data-testid="back-button" to={{ pathname: "/" }} className={styles.backButton}>
+        <div>&larr;</div>
+        <span>Back</span>
+      </Link>
+      {filteredComics.length > 0 && (
+        <div className={styles.searchFilter}>
+          <input
+            data-testid="search-filter"
+            type="text"
+            placeholder="Filtrar por titulo"
+            onChange={(event) => useStringFilter(event.target.value, comics, "title")}
+          />
+        </div>
+      )}
 
       <div className={styles.comicCardsWrapper}>
-        {filteredComics.map((item) => (
-          <ComicCard {...item} key={item.id} />
-        ))}
+        {filteredComics.length === 0 ? (
+          <div className={styles.noData}>Nenhum dado encontrado</div>
+        ) : (
+          filteredComics.map((item) => <ComicCard {...item} key={item.id} />)
+        )}
       </div>
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={Math.ceil(totalComics / reqLength)}
-        handleNextPage={handleNextPage}
-        handlePrevPage={handlePrevPage}
-      />
-
-      {loadError.length && <div data-testid="load-error">{loadError}</div>}
+      {filteredComics.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(totalComics / reqLength)}
+          handleNextPage={handleNextPage}
+          handlePrevPage={handlePrevPage}
+        />
+      )}
+      {loadError && <div data-testid="load-error">{loadError}</div>}
     </div>
   );
 };
