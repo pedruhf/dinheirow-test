@@ -1,7 +1,6 @@
 import { Character } from "@/domain/models";
 import { LoadCharactersDetails } from "@/domain/features";
 import { HttpClient } from "@/data/contracts";
-import { characterMock } from "@/tests/domain/mocks";
 
 export class RemoteLoadCharacterDetails implements LoadCharactersDetails {
   constructor(private readonly httpClient: HttpClient) {}
