@@ -7,6 +7,7 @@ const makeSut = () => {
   httpClientStub.data = {
     data: {
       results: [backendComicMock()],
+      total: 50,
     },
   };
   const sut = new RemoteLoadCharacterComics(httpClientStub);
@@ -26,10 +27,13 @@ describe("RemoteLoadCharacterComics Use Case", () => {
     const { sut } = makeSut();
     const result = await sut.loadAll(1);
 
-    expect(result).toEqual([{
-      ...backendComicMock(),
-      thumbnail: `${backendComicMock().thumbnail.path}.${backendComicMock().thumbnail.extension}`,
-    }]);
+    expect(result).toMatchObject({
+      comics: [{
+        ...backendComicMock(),
+        thumbnail: `${backendComicMock().thumbnail.path}.${backendComicMock().thumbnail.extension}`,
+      }],
+      totalComics: 50,
+    });
   });
 
   test("should rethrow if httpClient throws", async () => {

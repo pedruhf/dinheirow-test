@@ -1,13 +1,16 @@
 import { Comic } from "@/domain/models";
-import { LoadCharactersComics } from "@/domain/features";
+import { LoadCharactersComics, LoadCharactersComicsResult } from "@/domain/features";
 import { HttpClient } from "@/data/contracts";
 
 export class RemoteLoadCharacterComics implements LoadCharactersComics {
   constructor(private readonly httpClient: HttpClient) {}
 
-  async loadAll(id: number): Promise<Comic[]> {
-    const result = await this.httpClient.request(`/characters/${id}/comics`, "get")
-    return this.mapDataToModel(result.data);
+  async loadAll(id: number): Promise<LoadCharactersComicsResult> {
+    const result = await this.httpClient.request(`/characters/${id}/comics`, "get");
+    return {
+      comics: this.mapDataToModel(result.data),
+      totalComics: result.data.data.total,
+    };
   }
 
   private mapDataToModel(data: Record<any, any>): Comic[] {
