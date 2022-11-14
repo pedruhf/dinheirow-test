@@ -30,7 +30,8 @@
     flex-direction: column;
 
     .comicTitle {
-      font-size: 1.1rem;
+      font-size: 1rem;
+      line-height: 1.25rem;
       font-weight: 600;
       text-transform: uppercase;
     }
@@ -40,9 +41,8 @@
       font-size:  0.9rem;
   
       p {
-        max-height: 12rem;
         font-weight: normal;
-        text-overflow: ',' ellipsis;
+        text-overflow: ellipsis;
         overflow: hidden;
       }
     }
