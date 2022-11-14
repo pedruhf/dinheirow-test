@@ -1,18 +1,15 @@
 import React, { useEffect } from "react";
 import styles from "./styles.module.scss";
 
-import { LoadCharactersDetails } from "@/domain/features";
-import { HttpClientAxiosAdapter } from "@/infra/http";
+import { LoadCharactersComics } from "@/domain/features";
 
 type CharacterDetailsProps = {
-  loadCharactersDetails: LoadCharactersDetails;
+  loadCharactersComics: LoadCharactersComics;
 };
 
-new HttpClientAxiosAdapter().request("/characters/1011334/comics", "get").then(res => console.log(res))
-
-export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharactersDetails }: CharacterDetailsProps) => {
+export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharactersComics }: CharacterDetailsProps) => {
   useEffect(() => {
-    loadCharactersDetails.load(1)
+    loadCharactersComics.loadAll(1)
       .then()
       .catch();
   }, []);

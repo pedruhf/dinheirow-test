@@ -3,44 +3,44 @@ import { fireEvent, render, RenderResult, screen, waitFor } from "@testing-libra
 import { Router } from "react-router-dom";
 import { createMemoryHistory, MemoryHistory } from "history";
 
-import { LoadCharactersDetails } from "@/domain/features";
-import { Character } from "@/domain/models";
+import { LoadCharactersComics } from "@/domain/features";
+import { Comic } from "@/domain/models";
 import { characterMock } from "@/tests/domain/mocks";
 import { CharacterDetails } from "@/presentation/views";
 
-class LoadCharactersSpy implements LoadCharactersDetails {
+class LoadCharactersComicsSpy implements LoadCharactersComics {
   callsCount = 0;
   characters = [characterMock()];
 
-  async load(id: number): Promise<Character> {
+  async loadAll(id: number): Promise<Comic[]> {
     this.callsCount++;
-    return Promise.resolve(characterMock())
+    return Promise.resolve([])
   }
 }
 
 type SutTypes = {
   sut: RenderResult;
-  loadCharactersDetailsSpy: LoadCharactersSpy;
+  loadCharactersComicsSpy: LoadCharactersComicsSpy;
   history: MemoryHistory;
 };
 
-const makeSut = (loadCharactersDetailsSpy = new LoadCharactersSpy()): SutTypes => {
+const makeSut = (loadCharactersComicsSpy = new LoadCharactersComicsSpy()): SutTypes => {
   const history = createMemoryHistory({ initialEntries: ["/characters/details/1"] });
   const sut = render(
     <Router navigator={history} location={history.location}>
-      <CharacterDetails loadCharactersDetails={loadCharactersDetailsSpy}/>
+      <CharacterDetails loadCharactersComics={loadCharactersComicsSpy}/>
     </Router>
   );
   return {
     sut,
-    loadCharactersDetailsSpy,
+    loadCharactersComicsSpy,
     history,
   };
 };
 
 describe("CharacterDetails View", () => {
   test("Should call loadCharactersDetails on start", async () => {
-    const { loadCharactersDetailsSpy } = makeSut();
-    expect(loadCharactersDetailsSpy.callsCount).toBe(1);
+    const { loadCharactersComicsSpy } = makeSut();
+    expect(loadCharactersComicsSpy.callsCount).toBe(1);
   });
 });
