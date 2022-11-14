@@ -25,7 +25,7 @@ type SutTypes = {
 };
 
 const makeSut = (loadCharactersSpy = new LoadCharactersSpy()): SutTypes => {
-  const history = createMemoryHistory();
+  const history = createMemoryHistory({ initialEntries: ["/"] });
   const sut = render(
     <Router navigator={history} location={history.location}>
       <Home loadCharacters={loadCharactersSpy} />

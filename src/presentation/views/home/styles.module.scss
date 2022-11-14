@@ -14,11 +14,15 @@
     }
   }
 
-  .characterCardsWrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 2rem;
+  a {
+    color: inherit;
+
+    .characterCardsWrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
   }
 }
 
