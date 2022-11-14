@@ -1,20 +1,22 @@
 import React from "react";
-import { fireEvent, render, RenderResult, screen, waitFor } from "@testing-library/react";
+import { render, RenderResult } from "@testing-library/react";
 import { Router } from "react-router-dom";
 import { createMemoryHistory, MemoryHistory } from "history";
 
-import { LoadCharactersComics } from "@/domain/features";
-import { Comic } from "@/domain/models";
-import { characterMock } from "@/tests/domain/mocks";
+import { LoadCharactersComics, LoadCharactersComicsResult } from "@/domain/features";
 import { CharacterDetails } from "@/presentation/views";
+import { comicMock } from "@/tests/domain/mocks";
 
 class LoadCharactersComicsSpy implements LoadCharactersComics {
   callsCount = 0;
-  characters = [characterMock()];
+  comics = [comicMock()];
 
-  async loadAll(id: number): Promise<Comic[]> {
+  async loadAll(id: number): Promise<LoadCharactersComicsResult> {
     this.callsCount++;
-    return Promise.resolve([])
+    return Promise.resolve({
+      comics: [],
+      totalComics: 50,
+    });
   }
 }
 
@@ -28,7 +30,7 @@ const makeSut = (loadCharactersComicsSpy = new LoadCharactersComicsSpy()): SutTy
   const history = createMemoryHistory({ initialEntries: ["/characters/details/1"] });
   const sut = render(
     <Router navigator={history} location={history.location}>
-      <CharacterDetails loadCharactersComics={loadCharactersComicsSpy}/>
+      <CharacterDetails loadCharactersComics={loadCharactersComicsSpy} />
     </Router>
   );
   return {
