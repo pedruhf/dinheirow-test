@@ -1,10 +1,6 @@
-export type ComicItem = {
-  resourceURI: string;
-  name: string;
-}
-
 export type Comic = {
-  available: number;
-  collectionURI: string,
-  item: ComicItem[];
-}
+  id: number;
+  title: string;
+  description: string;
+  thumbnail: string;
+};

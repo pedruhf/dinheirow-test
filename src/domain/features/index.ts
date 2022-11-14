@@ -1,2 +1,2 @@
 export * from "./load-characters";
-export * from "./load-character-details";
+export * from "./load-character-comics";
