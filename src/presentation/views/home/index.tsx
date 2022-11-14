@@ -65,7 +65,7 @@ export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
 
       <Pagination currentPage={currentPage} totalPages={10} handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} />
 
-      {loadError.length && <div data-testid="load-error">{loadError}</div>}
+      {loadError && <div data-testid="load-error">{loadError}</div>}
     </div>
   );
 };

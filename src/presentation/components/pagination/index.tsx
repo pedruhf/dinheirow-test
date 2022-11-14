@@ -11,7 +11,12 @@ type PaginationProps = {
 export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, handlePrevPage, handleNextPage }) => {
   return (
     <div className={styles.paginationWrapper}>
-      <button data-testid="pagination-prev-button" className={styles.paginationButton} onClick={async () => await handlePrevPage(currentPage)} disabled={currentPage === 1}>
+      <button
+        data-testid="pagination-prev-button"
+        className={styles.paginationButton}
+        onClick={async () => await handlePrevPage(currentPage)}
+        disabled={currentPage === 1}
+      >
         &#8592;
       </button>
 
@@ -19,7 +24,12 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages,
         Página {currentPage} de {totalPages}
       </span>
 
-      <button data-testid="pagination-next-button" className={styles.paginationButton} onClick={async () => await handleNextPage(currentPage)} disabled={currentPage === totalPages}>
+      <button
+        data-testid="pagination-next-button"
+        className={styles.paginationButton}
+        onClick={async () => await handleNextPage(currentPage)}
+        disabled={currentPage >= totalPages}
+      >
         &#8594;
       </button>
     </div>
