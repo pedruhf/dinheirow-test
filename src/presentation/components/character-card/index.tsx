@@ -15,7 +15,7 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ name, description,
       <div className={styles.characterInfo}>
         <strong data-testid="character-name" className={styles.characterName}>{name}</strong>
         <strong data-testid="character-description" className={styles.characterDescription}>
-          Descrição: <p>{description}</p>
+          Description: <p>{description}</p>
         </strong>
       </div>
     </div>

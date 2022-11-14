@@ -15,7 +15,7 @@ export const ComicCard: React.FC<ComicCardProps> = ({ title, description, thumbn
       <div className={styles.comicInfo}>
         <strong data-testid="comic-title" className={styles.comicTitle}>{title}</strong>
         <strong data-testid="comic-description" className={styles.comicDescription}>
-          Descrição: <p>{description}</p>
+          Description: <p>{description}</p>
         </strong>
       </div>
     </div>
