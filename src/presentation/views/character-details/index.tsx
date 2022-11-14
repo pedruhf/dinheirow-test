@@ -13,6 +13,7 @@ type CharacterDetailsProps = {
 };
 
 export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharactersComics }: CharacterDetailsProps) => {
+  const reqLength = 12;
   const { id } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [comics, setComics] = useState<Comic[]>([]);
@@ -23,20 +24,20 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharacte
 
   const handleNextPage = async () => {
     setCurrentPage((prevState) => prevState + 1);
-    const result = await loadCharactersComics.loadAll(Number(id));
+    const result = await loadCharactersComics.loadAll(Number(id), currentPage + 1, reqLength);
     setComics(result.comics);
     setFilteredComics(result.comics);
   };
 
   const handlePrevPage = async () => {
     setCurrentPage((prevState) => prevState - 1);
-    const result = await loadCharactersComics.loadAll(Number(id));
+    const result = await loadCharactersComics.loadAll(Number(id), currentPage - 1, reqLength);
     setComics(result.comics);
     setFilteredComics(result.comics);
   };
 
   useEffect(() => {
-    loadCharactersComics.loadAll(Number(id))
+    loadCharactersComics.loadAll(Number(id), currentPage, reqLength)
       .then((result) => {
         setComics(result.comics);
         setFilteredComics(result.comics);
@@ -64,7 +65,7 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharacte
         ))}
       </div>
 
-      <Pagination currentPage={currentPage} totalPages={1} handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} />
+      <Pagination currentPage={currentPage} totalPages={Math.ceil(totalComics / reqLength)} handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} />
 
       {loadError.length && <div data-testid="load-error">{loadError}</div>}
     </div>

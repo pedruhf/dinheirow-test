@@ -6,5 +6,5 @@ export type LoadCharactersComicsResult = {
 }
 
 export interface LoadCharactersComics {
-  loadAll: (id: number) => Promise<LoadCharactersComicsResult>;
+  loadAll: (id: number, page?: number, limit?: number) => Promise<LoadCharactersComicsResult>;
 }
