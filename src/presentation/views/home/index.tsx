@@ -1,48 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Character } from "@/domain/models";
 import { LoadCharacters } from "@/domain/features";
 import { CharacterCard, Pagination } from "@/presentation/components";
 import { useStringFilterSetup } from "@/presentation/hooks";
+import { RequestHandler } from "@/data/contracts";
 
 import styles from "./styles.module.scss";
 import { Link } from "react-router-dom";
 
 type HomeProps = {
   loadCharacters: LoadCharacters;
+  requestHandler: RequestHandler<Character[]>;
 };
 
-export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
+export const Home: React.FC<HomeProps> = ({ loadCharacters, requestHandler }: HomeProps) => {
   const reqLength = 24;
   const [currentPage, setCurrentPage] = useState(1);
-  const [characters, setCharacters] = useState<Character[]>([]);
   const [filteredCharacters, setFilteredCharacters] = useState([]);
-  const [loadError, setLoadError] = useState("");
   const useStringFilter = useStringFilterSetup((array) => setFilteredCharacters(array));
 
   const handleNextPage = async () => {
     setCurrentPage((prevState) => prevState + 1);
-    const result = await loadCharacters.loadAll(currentPage + 1, reqLength);
-    setCharacters(result);
-    setFilteredCharacters(result);
   };
 
   const handlePrevPage = async () => {
     setCurrentPage((prevState) => prevState - 1);
-    const result = await loadCharacters.loadAll(currentPage - 1, reqLength);
-    setCharacters(result);
-    setFilteredCharacters(result);
   };
 
-  useEffect(() => {
-    loadCharacters
-      .loadAll(currentPage, reqLength)
-      .then((result) => {
-        setCharacters(result);
-        setFilteredCharacters(result);
-      })
-      .catch((err) => setLoadError(err.message));
-  }, []);
+  const {
+    data: characters,
+    isLoading,
+    error,
+  } = requestHandler.handle(["loadAllCharacters", currentPage.toString()], async () => {
+    const result = await loadCharacters.loadAll(currentPage, reqLength);
+    setFilteredCharacters(result);
+    return result;
+  });  
 
   return (
     <div className={styles.homeWrapper}>
@@ -65,7 +59,7 @@ export const Home: React.FC<HomeProps> = ({ loadCharacters }: HomeProps) => {
 
       <Pagination currentPage={currentPage} totalPages={10} handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} />
 
-      {loadError && <div data-testid="load-error">{loadError}</div>}
+      {error && <div data-testid="load-error">{error}</div>}
     </div>
   );
 };
