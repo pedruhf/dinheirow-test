@@ -5,7 +5,7 @@ import { HttpClient } from "@/data/contracts";
 export class RemoteLoadCharacterComics implements LoadCharactersComics {
   constructor(private readonly httpClient: HttpClient) {}
 
-  async loadAll(id: number, page?: number, limit?: number): Promise<LoadCharactersComicsResult> {
+  async loadAll(id: number, page: number = 1, limit: number = 12): Promise<LoadCharactersComicsResult> {
     const result = await this.httpClient.request(`/characters/${id}/comics`, "get", {
       params: {
         offset: (page - 1) * limit,
