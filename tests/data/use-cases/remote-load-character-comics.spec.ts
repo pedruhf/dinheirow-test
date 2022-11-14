@@ -18,14 +18,19 @@ describe("RemoteLoadCharacterComics Use Case", () => {
   test("should call httpClient with correct input", async () => {
     const { sut, httpClientStub } = makeSut();
     const requestSpy = jest.spyOn(httpClientStub, "request");
-    await sut.loadAll(1);
+    await sut.loadAll(1, 1, 10);
 
-    expect(requestSpy).toHaveBeenCalledWith("/characters/1/comics", "get");
+    expect(requestSpy).toHaveBeenCalledWith("/characters/1/comics", "get", {
+      params: {
+        offset: 0,
+        limit: 10
+      }
+    });
   });
 
   test("should return a list of comics on success", async () => {
     const { sut } = makeSut();
-    const result = await sut.loadAll(1);
+    const result = await sut.loadAll(1, 1, 10);
 
     expect(result).toMatchObject({
       comics: [{
@@ -39,7 +44,7 @@ describe("RemoteLoadCharacterComics Use Case", () => {
   test("should rethrow if httpClient throws", async () => {
     const { sut, httpClientStub } = makeSut();
     jest.spyOn(httpClientStub, "request").mockRejectedValueOnce(new Error("request error"));
-    const resultPromise = sut.loadAll(1);
+    const resultPromise = sut.loadAll(1, 1, 10);
 
     await expect(resultPromise).rejects.toThrow(new Error("request error"));
   });
