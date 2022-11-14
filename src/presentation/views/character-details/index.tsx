@@ -1,51 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { Comic } from "@/domain/models";
-import { LoadCharactersComics } from "@/domain/features";
+import { LoadCharactersComics, LoadCharactersComicsResult } from "@/domain/features";
 import { ComicCard, Pagination } from "@/presentation/components";
 import { useStringFilterSetup } from "@/presentation/hooks";
+import { RequestHandler } from "@/data/contracts";
 
 import styles from "./styles.module.scss";
 
 type CharacterDetailsProps = {
   loadCharactersComics: LoadCharactersComics;
+  requestHandler: RequestHandler<LoadCharactersComicsResult>;
 };
 
-export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharactersComics }: CharacterDetailsProps) => {
+export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharactersComics, requestHandler }: CharacterDetailsProps) => {
   const reqLength = 12;
   const { id } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
-  const [comics, setComics] = useState<Comic[]>([]);
   const [filteredComics, setFilteredComics] = useState([]);
-  const [totalComics, setTotalComics] = useState(0);
-  const [loadError, setLoadError] = useState("");
   const useStringFilter = useStringFilterSetup((array) => setFilteredComics(array));
 
   const handleNextPage = async () => {
     setCurrentPage((prevState) => prevState + 1);
-    const result = await loadCharactersComics.loadAll(Number(id), currentPage + 1, reqLength);
-    setComics(result.comics);
-    setFilteredComics(result.comics);
   };
 
   const handlePrevPage = async () => {
     setCurrentPage((prevState) => prevState - 1);
-    const result = await loadCharactersComics.loadAll(Number(id), currentPage - 1, reqLength);
-    setComics(result.comics);
-    setFilteredComics(result.comics);
   };
 
-  useEffect(() => {
-    loadCharactersComics
-      .loadAll(Number(id), currentPage, reqLength)
-      .then((result) => {
-        setComics(result.comics);
-        setFilteredComics(result.comics);
-        setTotalComics(result.totalComics);
-      })
-      .catch((err) => setLoadError(err.message));
-  }, []);
+  const { data, isLoading, error } = requestHandler.handle(["loadCharactersComics", currentPage.toString()], async () => {
+    const result = await loadCharactersComics.loadAll(Number(id), currentPage, reqLength);
+    setFilteredComics(result.comics);
+    return result;
+  });
+
+  const { totalComics, comics } = data || {};
 
   return (
     <div className={styles.characterDetailsWrapper}>
@@ -80,7 +69,7 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ loadCharacte
           handlePrevPage={handlePrevPage}
         />
       )}
-      {loadError && <div data-testid="load-error">{loadError}</div>}
+      {error && <div data-testid="load-error">{error}</div>}
     </div>
   );
 };
