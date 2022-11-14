@@ -31,4 +31,5 @@ npm run dev
 * Design Patterns
 * Testes Automatizados
 * Boas práticas
+* Documentação
 ```
